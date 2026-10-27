@@ -1,0 +1,101 @@
+/* ---------- 补充样式 ---------- */
+.hidden{display:none !important}
+
+/* 精卵束开场遮罩 */
+.cover{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  background:radial-gradient(80% 80% at 50% 40%, rgba(10,40,60,.9), rgba(5,18,30,.97));
+  transition:opacity .4s ease;
+}
+.cover.gone{opacity:0;pointer-events:none}
+.float-bundle{animation:bobble 4.2s ease-in-out infinite}
+@keyframes bobble{
+  0%,100%{transform:translateY(0) rotate(-1.5deg)}
+  50%{transform:translateY(-12px) rotate(1.5deg)}
+}
+.bundle-svg{width:100%;max-height:430px;flex:1;display:block}
+.bundle-svg.hidden{display:none}
+
+/* 可点击的珊瑚虫 */
+.polyp .polyp-core{transform-box:fill-box;transform-origin:center}
+.polyp .polyp-eye{transform-box:fill-box;transform-origin:center}
+.polyp:hover .polyp-eye{transform:scale(1.4)}
+.scene.bleached .polyp-core{fill:#f7fcff}
+.scene.bleached .polyp-eye{fill:#dfeef5}
+
+/* 卵细胞高亮 */
+.egg-svg [data-hl]{transition:filter .35s ease, opacity .35s ease}
+.egg-svg .hl{filter:drop-shadow(0 0 9px rgba(255,209,102,.95))}
+.egg-svg{width:100%;height:auto;display:block}
+
+/* 地图 */
+.world-map{width:100%;height:auto;display:block}
+.map-marker text{font-size:11px}
+#mapInfo{min-height:210px}
+
+/* 选项锁定 */
+.opt.locked{cursor:default}
+.opt.locked:hover{border-color:inherit}
+
+/* 判断卡 */
+.myth.answered .myth-btns{display:none}
+.transfer-card.pick{border-color:rgba(255,209,102,.4);background:rgba(255,209,102,.07)}
+
+/* 小屏修正 */
+@media (max-width:760px){
+  .cover .small{max-width:24ch;text-align:center}
+  .bundle-svg{max-height:320px}
+  .map-marker text{font-size:9px}
+  .depth-stage{gap:10px}
+  .tank{min-height:260px}
+  .big-moon{width:120px;height:120px}
+}
+
+/* ===== 板块4 动态漂流场景 ===== */
+.j-scene-wrap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+#jScene{display:block;width:100%;height:auto}
+.j-caption{position:absolute;left:16px;top:12px;pointer-events:none}
+.j-caption .jv-time{font-size:10px;color:#8fd8ef;letter-spacing:.14em}
+.j-caption .jv-title{font-size:17px;font-weight:600;color:#eaf6fc;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.j-actor{will-change:transform,opacity}
+.j-controls{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.j-bubbles circle{animation:j-rise linear infinite}
+@keyframes j-rise{to{transform:translateY(-560px)}}
+.j-waveband{animation:j-drift 3.2s linear infinite}
+@keyframes j-drift{to{transform:translateX(-60px)}}
+.j-star{animation:j-twinkle 2.6s ease-in-out infinite}
+@keyframes j-twinkle{0%,100%{opacity:1}50%{opacity:.25}}
+.j-ray{animation:j-sway 7s ease-in-out infinite;transform-origin:top center}
+@keyframes j-sway{0%,100%{transform:skewX(0deg)}50%{transform:skewX(5deg)}}
+.j-wobble{animation:j-wobble 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes j-wobble{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(3px,-4px) rotate(4deg)}}
+#jCoral.spawning .j-tents{animation:j-sway2 .7s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+@keyframes j-sway2{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+#jCoral.spawning #jCoralMouth{animation:j-pop .7s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes j-pop{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+.j-sperm circle{animation:j-dart 1.6s ease-in-out infinite}
+.j-sperm circle:nth-child(2n){animation-delay:-.5s}
+.j-sperm circle:nth-child(3n){animation-delay:-.9s}
+.j-sperm circle:nth-child(5n){animation-delay:-1.3s}
+@keyframes j-dart{0%,100%{transform:translate(0,0)}25%{transform:translate(5px,-4px)}75%{transform:translate(-4px,4px)}}
+.j-sperm .j-dart-a{animation:j-dart-a 2.4s ease-in infinite}
+@keyframes j-dart-a{0%{transform:translate(0,0);opacity:1}80%{transform:translate(16px,-26px);opacity:1}100%{transform:translate(16px,-26px);opacity:0}}
+.j-sperm .j-dart-b{animation:j-dart-b 2.4s ease-in infinite;animation-delay:-1.1s}
+@keyframes j-dart-b{0%{transform:translate(0,0);opacity:1}80%{transform:translate(-26px,24px);opacity:1}100%{transform:translate(-26px,24px);opacity:0}}
+.j-hardring{opacity:0;transform-box:fill-box;transform-origin:center}
+.j-hardring.go{animation:j-hard .8s ease-out forwards}
+@keyframes j-hard{0%{opacity:0;transform:scale(1)}40%{opacity:1}100%{opacity:.9;transform:scale(1.5)}}
+.j-div{opacity:0;transition:opacity .5s}
+.j-div.on{opacity:1}
+.j-swim{animation:j-swim 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes j-swim{0%,100%{transform:translate(0,0)}25%{transform:translate(16px,-7px)}50%{transform:translate(0,0)}75%{transform:translate(-16px,7px)}}
+.j-cilia{animation:j-cilia .5s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes j-cilia{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.86) scaleY(1.08)}}
+.j-swim.dash{animation:j-dash .95s ease-out;transform-box:fill-box;transform-origin:center}
+@keyframes j-dash{0%{transform:translate(0,0) scale(1)}60%{transform:translate(70px,-14px) scale(1.06)}100%{transform:translate(0,0) scale(1)}}
+.j-tents2{animation:j-sway2 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+.j-buds{transition:opacity .8s}
+@media (max-width:760px){
+  .j-caption .jv-title{font-size:14px}
+}

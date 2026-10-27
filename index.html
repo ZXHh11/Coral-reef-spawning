@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="edryCxP8B1E2MtJSMlDDVv">
+<head data-page-node-id="zTKiXIWaXApjQyNRTwCkkh">
+<meta charset="UTF-8" data-page-node-id="0dCWixnrScwPWI4CLjbEvT">
+<meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="K9eXgCkTWtT2rfgQgtqXLd">
+<title>珊瑚礁产卵 · 交互实验室</title>
+<link rel="stylesheet" href="styles.css" data-page-node-id="KF6M4cIM50Oz1V8oreQChE">
+<link rel="stylesheet" href="extra.css" data-page-node-id="AgZrUR8YySCBm9qaJKyhTg">
+</head>
+<body data-page-node-id="QQUXwtZVEq2setKQMV1msI">
+
+<div class="bubbles" id="bubbles" aria-hidden="true" data-page-node-id="0iIUofgd8UkLVYUu6f9ogA"></div>
+<canvas id="fx" aria-hidden="true" data-page-node-id="UO1fDLKfg47QZKiTfTySZI"></canvas>
+
+<header class="hud hidden" id="hud" data-page-node-id="SN5fsNwWVGGUE7kpWJDDVv">
+  <button class="hud-back" id="btnHome" data-page-node-id="CdAwxfBcFNDaq83WsFTs4A">← 地图</button>
+  <div class="bank" data-page-node-id="JiA8GSghprQOovp6vGZttl">
+    <div class="bank-row" data-page-node-id="yRy5KmASoC9NQzsEAdVVFB">
+      <span class="bank-ico" data-page-node-id="xxhyKvU3rSHjgFcuulEPfB">🪸</span>
+      <span class="bank-label" data-page-node-id="8yttUv20nysBBtnuTxG5Z1">精卵束银行</span>
+      <strong id="moneyText" data-page-node-id="rLmLVvq0umbvwjfEyJ6rt3">0</strong>
+      <span class="bank-goal" data-page-node-id="WfiEntLJggre64pBuiVgyo">/ 100,000亿</span>
+    </div>
+    <div class="bank-bar" data-page-node-id="JAhxwKMomcPtr3H6AACd2F"><i id="moneyBar" data-page-node-id="hDrPS4tesrIyQOj7IqPXzx"></i></div>
+  </div>
+  <div class="hud-right" data-page-node-id="YjpSkASDKeKLO8lywsse18">
+    <button class="hud-chip" id="btnDex" data-page-node-id="hbrJkjHzy1C6Gjf7Y8CclA">🏅 发现 <b id="dexCount" data-page-node-id="EwVYQdFwpkk0Q2rme6NJoB">0</b></button>
+    <button class="hud-chip ghost" id="btnReset" data-page-node-id="fbA7RdSJQNWaC7zhEYqqtJ">重置</button>
+  </div>
+</header>
+
+<main id="app" data-page-node-id="jR4vxptorozXEAGmjdfyc4">
+
+  <!-- ============ 开场 ============ -->
+  <section class="screen active" id="screen-intro" data-page-node-id="rJx8RFNeTx13vL7NIgIaAD">
+    <div class="intro-bg" id="introBg" data-page-node-id="nnIg8iORh6z3SaNHue1hsn"></div>
+    <div class="intro-copy" data-page-node-id="9b9RMqHq1ZioDWbaubrR6P">
+      <p class="eyebrow" data-page-node-id="fZ2NqW18ObaY5zK1cPOMkx">海洋生命奇迹 · 交互探索</p>
+      <h1 data-page-node-id="kCNe8T3AdCWSY105wyBq0k">珊瑚礁产卵</h1>
+      <p class="intro-sub" data-page-node-id="FlJAqh8my6EnUBu46u54p9">一年只发生几晚的「海底暴风雪」</p>
+      <p class="intro-desc" data-page-node-id="zHGU1BjiNVbZXDGs4nDqQX">
+        调节四个条件，让整片珊瑚礁在同一晚产卵。<br data-page-node-id="u2sZBSjSsZP8Bpg8RBHa4E">
+        探索 8 个板块，收集精卵束，攒到 <b data-page-node-id="DgSeauG7e6F08BkKv8WZXv">10 万亿</b>，
+        见证最壮观的时刻。
+      </p>
+      <button class="btn primary big" id="btnStart" data-page-node-id="ulLaYdBbHfxiOPfxaLpZpx">进入实验室 →</button>
+      <div class="intro-chips" data-page-node-id="oz8YUYFbEWlme3vIKBr8Ev">
+        <span data-page-node-id="5STUKiW13jWnRR0UXMEomZ">🪸 8 个互动板块</span>
+        <span data-page-node-id="wd3FuTIOhUg9B7aNCe3dr8">🧪 20+ 个小实验</span>
+        <span data-page-node-id="o6KgvtmWYVvsyck8XwYw4z">🏅 隐藏彩蛋</span>
+      </div>
+    </div>
+    <div class="scroll-hint" data-page-node-id="XTp18riGzuPaylZvmzjFL0">↓ 向下滚动也能进入</div>
+  </section>
+
+  <!-- ============ 主页地图 ============ -->
+  <section class="screen" id="screen-home" data-page-node-id="6kgX4Z7OGcuRnJixDIYBQg">
+    <div class="home-head" data-page-node-id="tvJE1luuf0G2eMraUxFzr1">
+      <div data-page-node-id="CoDC2IpojYXXj6J4EfGmTs">
+        <p class="eyebrow" data-page-node-id="MRjDiJTGgU5KuAQQrkJFAg">珊瑚产卵实验室</p>
+        <h2 data-page-node-id="Q5XvGiFCQxEAgMwBx0rMLM">今天想研究什么？</h2>
+      </div>
+      <div class="home-meta" data-page-node-id="mRbzN34zAri99fTHDrUPXH">
+        <span data-page-node-id="N4SulxINJXxwarISnpc3qh">已探索 <b id="exploreCount" data-page-node-id="SlNbDZuAtkDz3j8UMBLtpE">0</b> / 8</span>
+        <span class="dot" data-page-node-id="bC9zXco9yD9KtYW88stAWd">·</span>
+        <span data-page-node-id="Mi3zsxYOmypHt7ya9nyUPJ">彩蛋 <b id="eggCount" data-page-node-id="hHEQ28lmgQlRFIfx4mqpxa">0</b></span>
+      </div>
+    </div>
+    <div class="home-grid" id="homeGrid" data-page-node-id="obSPVquvTW406YWsqO4NkE"></div>
+    <p class="home-foot" data-page-node-id="pWCsI1Xzus6DgpN8L2C60E">提示：每个板块末尾都有答题，难度越高奖励越多。</p>
+  </section>
+
+  <!-- ============ 模块容器 ============ -->
+  <section class="screen" id="screen-module" data-page-node-id="WUA0Pbh6dmbrXKOX4b0bLH">
+    <div class="module-head" data-page-node-id="5TVA9iSn2E42j7heCARL3p">
+      <div data-page-node-id="aMyBMS3xpHd7aFEAi1N0ws">
+        <p class="eyebrow" id="modKicker" data-page-node-id="vdcrhm7Di48zTr4SAGIHFr"></p>
+        <h2 id="modTitle" data-page-node-id="oxFvhuJTQVG1no1NBH1uxd"></h2>
+      </div>
+      <div class="module-tools" data-page-node-id="feaLeaNQFxSQjifNlyjxAW">
+        <span class="mod-progress" id="modProgress" data-page-node-id="SHFT58WPXoIvVgYyNVn1DN"></span>
+      </div>
+    </div>
+    <div id="moduleBody" data-page-node-id="oTMSiYPeSIHwmFpY1GAHSQ"></div>
+  </section>
+
+  <!-- ============ 终局 ============ -->
+  <section class="screen" id="screen-final" data-page-node-id="qSXIisdhpOXi4WXwdn8oZt">
+    <div class="final-wrap" data-page-node-id="F89t4UwcXMeCb0NGyuD9ya">
+      <p class="eyebrow gold" data-page-node-id="pZkVWjXT0nN6tyqRMU97w4">10 万亿达成</p>
+      <h2 data-page-node-id="dz4tL6xK5ExX2QkOlB9oQR">海底暴风雪</h2>
+      <p class="final-lead" data-page-node-id="JAJpfmMm1D3jPACkjTFxND">你收集的精卵束，铺满了整片海面。</p>
+      <p class="final-text" data-page-node-id="5Q7FHjx8PBpqCFGiJVvo3c">
+        成亿颗精卵束同时上升，在海面破裂、受精，形成长达数公里的粉红色卵带。
+        这是珊瑚礁一年中最重要的一夜。
+      </p>
+      <div class="final-actions" data-page-node-id="OERCCjmWiSPpOX3iIkxNHl">
+        <button class="btn primary" id="btnFinalPlay" data-page-node-id="Rh4TEKN7S1GuHsM76jpUVa">再放一次</button>
+        <button class="btn ghost" data-home data-page-node-id="vsMtOlsjvfeBDVFmuC6FUS">回到地图</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toasts" id="toasts" data-page-node-id="YoFneWyH4pG6Mno8TJ8RBh"></div>
+<div class="modal" id="modal" role="dialog" aria-modal="true" data-page-node-id="5e3umDmHxHsmK0Us35qt4J">
+  <div class="modal-card" id="modalCard" data-page-node-id="ZpJ5N4NO11gRQFBIKGh1Bb"></div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/modules.js"></script>
+<script src="js/modules2.js"></script>
+<script src="js/modules3.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
