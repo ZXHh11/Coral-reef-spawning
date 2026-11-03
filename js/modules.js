@@ -430,28 +430,43 @@ const LAB = {
       setTimeout(() => slick.classList.remove('on'), 6000);
       const r = scene.getBoundingClientRect();
       FX.burst(r.left + r.width / 2, r.top + r.height / 2, 40);
-      note.textContent = '整片礁区在同一分钟里松开。精卵束向上升，像一场倒着下的雪。';
+
+      // 前三次规模递增：5,000 → 7,500 → 11,250；之后只算练习（1,200），把玩家推向其他板块
+      const runs = State.spawnRuns || 0;
+      State.spawnRuns = runs + 1;
+      saveState();
+      const capped = runs >= 3;
+      const reward = capped ? 1200 : Math.round(5000 * Math.pow(1.5, runs) / 100) * 100;
+      note.textContent = `整片礁区在同一分钟里松开。精卵束向上升，像一场倒着下的雪。＋${fmt(reward)}亿` +
+        (capped ? '（这片礁区的产卵已经记录满了，别的板块还有更多）' : '');
+
+      addMoney(reward);
+      if (runs > 0) {
+        toast(capped
+          ? '🪸 第 ' + (runs + 1) + ' 次大产卵 · <b style="color:#ffd166">+' + fmt(reward) + '亿</b> · 记录已满'
+          : '🪸 第 ' + (runs + 1) + ' 次大产卵 · <b style="color:#ffd166">+' + fmt(reward) + '亿</b>', 3200);
+      }
 
       if (first) {
-        addMoney(2000);
         markDone('lab');
         setTimeout(() => {
           openModal(`
-            <p class="kicker">你守到了</p>
+            <p class="kicker">你守到了 · +${fmt(reward)}亿</p>
             <h2>整片礁区，同一夜</h2>
             <p>成千上万个珊瑚虫在同一时刻释放精卵束。它们向上升，像一场倒着下的雪。</p>
             <p>到海面后束膜破裂，精卵混合，形成一条粉褐色的<b>卵带</b>，可以长达几公里——卫星都拍得到。</p>
             <p class="small muted" style="margin-top:12px">你刚才选的那四个数，不是标准答案。换个海区、换个物种，数字都会变一点。</p>
+            <p style="margin-top:12px;color:#ffd166"><b>🔓 另外 7 个板块已解锁</b>——结构、卵细胞、地图、旅程都在等着。</p>
             <p><a href="https://www.bilibili.com/video/BV1f54y1L7wT/" target="_blank" rel="noopener">▶ 看真实的大产卵视频（B 站）</a></p>
             <div class="modal-actions">
-              <button class="btn primary" data-close>继续实验</button>
-              <button class="btn" data-home>去看看其他板块</button>
+              <button class="btn primary" data-home>去看看解锁的板块</button>
+              <button class="btn" data-close>留在实验室继续守</button>
             </div>
           `);
         }, 2400);
         discover('lab-spawn', '大产卵现场', '整片珊瑚礁在同一晚释放精卵束，海面形成卵带。', 100);
       } else {
-        discover('lab-spawn-again', '又一次守到', '条件对了，礁区就会再来一次——只是规模会随年份不同。', 50);
+        discover('lab-spawn-again', '又一次守到', '条件对了，礁区就会再来一次——规模会比上一晚更大。', 50);
       }
 
       if (st.temp === 27 && st.moon === 3 && st.time === 'night' && st.season === 'summer') {

@@ -608,14 +608,15 @@ const QUIZZES = {
 };
 
 const QUIZ_REWARDS = {
-  lab: { easy: 5000, medium: 8000, hard: 15000 },
-  bundle: { easy: 2000, medium: 3000, hard: 5000 },
-  egg: { easy: 2000, medium: 3000, hard: 5000 },
-  map: { easy: 2000, medium: 3000, hard: 5000 },
-  journey: { easy: 2000, medium: 3000, hard: 5000 },
-  depth: { easy: 2000, medium: 3000, hard: 5000 },
-  moon: { easy: 2000, medium: 3000, hard: 5000 },
-  sunscreen: { easy: 2000, medium: 3000, hard: 5000 }
+  // 主实验是主线，奖励给得最重：三档全过 ≈ 28,000 亿
+  lab: { easy: 4000, medium: 8000, hard: 16000 },
+  bundle: { easy: 2500, medium: 5000, hard: 10000 },
+  egg: { easy: 2500, medium: 5000, hard: 10000 },
+  map: { easy: 2500, medium: 5000, hard: 10000 },
+  journey: { easy: 2500, medium: 5000, hard: 10000 },
+  depth: { easy: 2500, medium: 5000, hard: 10000 },
+  moon: { easy: 2500, medium: 5000, hard: 10000 },
+  sunscreen: { easy: 2500, medium: 5000, hard: 10000 }
 };
 
 const MODULES = {

@@ -3,6 +3,15 @@
    ============================================================ */
 
 function showFinal() {
+  closeModal();
+  const all = ['lab', 'bundle', 'egg', 'map', 'journey', 'depth', 'moon', 'sunscreen'];
+  const left = all.filter(id => !State.modules[id]);
+  const el = $('#finalLeft');
+  if (el) {
+    el.textContent = left.length
+      ? `还有 ${left.length} 个板块没去过——它们已经解锁，随时可以回去。`
+      : '八个板块全部走完了。';
+  }
   showScreen('final');
   FX.storm(16000);
   setTimeout(() => {
@@ -72,6 +81,9 @@ function showFinal() {
   }
   if (params.get('quiz') && params.get('level')) {
     startQuiz(params.get('quiz'), params.get('level'));
+  }
+  if (params.get('hint')) {
+    setTimeout(lockedHint, 300);
   }
 
   // 键盘：Esc 已在 core 绑定

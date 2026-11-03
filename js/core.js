@@ -51,10 +51,17 @@ function renderHud() {
 
   $$('.module-card[data-module]').forEach(card => {
     const done = !!State.modules[card.dataset.module];
+    const locked = !isUnlocked(card.dataset.module);
     card.classList.toggle('done', done);
+    card.classList.toggle('locked', locked);
     const st = card.querySelector('.mc-state');
-    if (st) st.textContent = done ? '✓ 已探索' : '未探索';
+    if (st) st.textContent = locked ? '🔒 完成主实验后解锁' : (done ? '✓ 已探索' : '未探索');
   });
+}
+
+/* ---------------- 解锁：先主实验，后其他板块 ---------------- */
+function isUnlocked(id) {
+  return id === 'lab' || !!State.modules.lab;
 }
 
 function floatMoney(n) {
@@ -76,6 +83,16 @@ function addMoney(n, silent) {
   saveState();
   renderHud();
   if (!silent) floatMoney(n);
+  // 大额入账时让银行条闪一下，强化“爆炸”感
+  if (n >= 5000) {
+    const bank = $('.bank');
+    if (bank) {
+      bank.classList.remove('pulse');
+      void bank.offsetWidth;
+      bank.classList.add('pulse');
+      setTimeout(() => bank.classList.remove('pulse'), 900);
+    }
+  }
   if (State.money >= GOAL && !State.finalSeen) {
     State.finalSeen = true;
     saveState();
@@ -218,22 +235,43 @@ function renderHome() {
   grid.innerHTML = order.map((id, i) => {
     const m = MODULES[id];
     const done = !!State.modules[id];
-    return `<button class="module-card ${id === 'lab' ? 'main' : ''} ${done ? 'done' : ''}" data-module="${id}">
+    const locked = !isUnlocked(id);
+    return `<button class="module-card ${id === 'lab' ? 'main' : ''} ${done ? 'done' : ''} ${locked ? 'locked' : ''}" data-module="${id}">
       <span class="mc-icon">${m.icon}</span>
       <h3>${m.title}</h3>
       <p>${m.desc}</p>
       <span class="mc-tag">${id === 'lab' ? '主实验' : '板块 ' + i}</span>
-      <span class="mc-state">${done ? '✓ 已探索' : '未探索'}</span>
+      <span class="mc-state">${locked ? '🔒 完成主实验后解锁' : (done ? '✓ 已探索' : '未探索')}</span>
     </button>`;
   }).join('');
+}
+
+function lockedHint() {
+  openModal(`
+    <p class="kicker">还没解锁</p>
+    <h2>先守到一次大产卵</h2>
+    <p>主实验是这条线的起点：先弄清楚四个条件、守到整片礁区产卵。那之后，另外 7 个板块才会打开。</p>
+    <p class="small muted" style="margin-top:10px">主线顺序：主实验 → 精卵束结构 → 卵细胞 → 全球地图 → 漂流旅程 → 深浅水 → 满月 → 防晒霜。</p>
+    <div class="modal-actions">
+      <button class="btn primary" data-module="lab">去主实验</button>
+      <button class="btn ghost" data-close>再看看</button>
+    </div>
+  `);
 }
 
 function markDone(id) {
   if (State.modules[id]) return;
   State.modules[id] = true;
   saveState();
+  const bonus = id === 'lab' ? 5000 : 2000;
+  addMoney(bonus);
   renderHud();
-  toast('✅ 板块探索完成：' + MODULES[id].title);
+  toast('✅ ' + MODULES[id].title + ' 探索完成 · <b style="color:#ffd166">+' + fmt(bonus) + '亿</b>', 3400);
+  if (id === 'lab' && !State.unlockNotice) {
+    State.unlockNotice = true;
+    saveState();
+    setTimeout(() => toast('🔓 主实验完成 · 另外 7 个板块已解锁', 4600), 1100);
+  }
 }
 
 /* ---------------- 答题引擎 ---------------- */
@@ -487,7 +525,11 @@ function bindGlobal() {
 
   document.addEventListener('click', e => {
     const mod = e.target.closest('[data-module]');
-    if (mod) { openModule(mod.dataset.module); return; }
+    if (mod) {
+      if (mod.classList.contains('locked')) { lockedHint(); return; }
+      openModule(mod.dataset.module);
+      return;
+    }
     const quiz = e.target.closest('[data-quiz]');
     if (quiz) { openQuiz(quiz.dataset.quiz); return; }
     const home = e.target.closest('[data-home]');
