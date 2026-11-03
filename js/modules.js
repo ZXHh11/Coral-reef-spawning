@@ -178,13 +178,25 @@ function reefSVG() {
 }
 
 /* ============================================================
-   板块 0：四个条件实验室
+   板块 0：四个条件实验室（线索版 · 不给答案）
    ============================================================ */
+const REEF_LOG = [
+  { place: '大堡礁 · 外礁', date: '11 月 19 日', moon: '第 4 晚', temp: 27.4, tide: 1.2, time: '日落后 1 小时 40 分', result: '整片产卵' },
+  { place: '大堡礁 · 内礁', date: '11 月 6 日', moon: '第 2 晚', temp: 27.0, tide: 1.5, time: '日落后 1 小时 10 分', result: '少量产卵' },
+  { place: '大堡礁 · 外礁', date: '10 月 29 日', moon: '满月当晚', temp: 26.9, tide: 3.1, time: '日落后 1 小时 30 分', result: '无' },
+  { place: '冲绳 · 瀬底', date: '6 月 12 日', moon: '第 3 晚', temp: 28.2, tide: 1.0, time: '日落后 2 小时', result: '多种同时产卵' },
+  { place: '三亚 · 鹿回头', date: '5 月 8 日', moon: '第 6 晚', temp: 26.6, tide: 1.1, time: '日落后 1 小时 20 分', result: '多种同时产卵' },
+  { place: '宁加洛 · 西澳', date: '3 月 27 日', moon: '第 5 晚', temp: 26.3, tide: 0.9, time: '日落后 1 小时', result: '产卵' },
+  { place: '红海 · 埃拉特', date: '7 月 2 日', moon: '第 4 晚', temp: 24.8, tide: 1.3, time: '日落后 1 小时 30 分', result: '无（当年暖得晚）' },
+  { place: '三亚 · 西岛', date: '5 月 10 日', moon: '第 12 晚', temp: 27.5, tide: 2.8, time: '日落后 1 小时 20 分', result: '无' },
+  { place: '大堡礁 · 外礁', date: '11 月 20 日', moon: '第 5 晚', temp: 27.2, tide: 1.1, time: '正午 12:00', result: '无' }
+];
+
 const LAB = {
   icon: '🧪',
-  kicker: '主实验 · 六个彩蛋',
+  kicker: '主实验 · 线索推理',
   title: '四个条件实验室',
-  desc: '调节季节、水温、月相与时间，让整片珊瑚礁在同一晚产卵。',
+  desc: '没有人告诉你答案。调条件、下水看、守一夜，自己找出规律。',
 
   render() {
     return `
@@ -196,33 +208,38 @@ const LAB = {
           <div class="slick" id="slick"></div>
           <div class="scene-badge" id="sceneBadge">☀️ 白天 · 24°C</div>
         </div>
-        <div class="scene-note" id="labNote">调节右边四个条件，让指示灯全部亮起来。</div>
+        <div class="scene-note" id="labNote">
+          海面很平静。先按「下潜观察」，看看珊瑚现在的样子。
+        </div>
       </div>
 
       <div class="panel lab-panel">
         <div class="ctrl">
-          <div class="ctrl-head"><label>① 季节 / 日照</label><span id="seasonVal">春</span></div>
+          <div class="ctrl-head"><label>① 季节</label><span id="seasonVal">春</span></div>
           <div class="seg" id="seasonSeg">
             <button data-v="spring">春</button>
             <button data-v="summer">夏</button>
             <button data-v="autumn">秋</button>
             <button data-v="winter">冬</button>
           </div>
+          <p class="readout" id="seasonRead">日照 12 小时 10 分</p>
         </div>
 
         <div class="ctrl">
           <div class="ctrl-head"><label>② 水温</label><span id="tempVal">24°C</span></div>
           <input type="range" id="tempRange" min="20" max="32" step="0.5" value="24">
-          <div class="range-ends"><span>20°C</span><span>26–28°C 适宜</span><span>32°C</span></div>
+          <div class="range-ends"><span>20°C</span><span>32°C</span></div>
+          <p class="readout" id="tempRead">水温计：24.0°C</p>
         </div>
 
         <div class="ctrl">
-          <div class="ctrl-head"><label>③ 月相 · 满月后天数</label><span id="moonVal">满月当天</span></div>
+          <div class="ctrl-head"><label>③ 月相</label><span id="moonVal">满月当天</span></div>
           <div class="moon-line">
             <div class="moon-face" id="moonFace"></div>
             <input type="range" id="moonRange" min="0" max="12" step="1" value="0">
           </div>
-          <div class="range-ends"><span>满月</span><span>第 9 天</span><span>第 12 天</span></div>
+          <div class="range-ends"><span>满月</span><span></span><span>第 12 晚</span></div>
+          <p class="readout" id="moonRead">潮差：3.1 m</p>
         </div>
 
         <div class="ctrl">
@@ -233,16 +250,14 @@ const LAB = {
             <button data-v="night">🌙 夜晚</button>
             <button data-v="deep">🌌 深夜</button>
           </div>
+          <p class="readout" id="timeRead">能见度 25 m，鱼群穿梭</p>
         </div>
 
-        <div class="lamps" id="lamps">
-          <div class="lamp" data-k="season"><i></i>☀️ 日照充足</div>
-          <div class="lamp" data-k="temp"><i></i>🌡️ 水温适宜</div>
-          <div class="lamp" data-k="moon"><i></i>🌕 满月时机</div>
-          <div class="lamp" data-k="time"><i></i>🌙 夜晚时间</div>
+        <div class="lab-actions">
+          <button class="btn" id="btnObserve">🔦 下潜观察</button>
+          <button class="btn primary" id="btnSpawn">🌙 守候今晚</button>
+          <button class="btn ghost" id="btnArchive">📓 礁区档案</button>
         </div>
-
-        <button class="btn primary" id="btnSpawn" disabled>让珊瑚产卵</button>
       </div>
     </div>
     ${quizCTA('lab')}`;
@@ -258,39 +273,48 @@ const LAB = {
     const names = { spring: '春', summer: '夏', autumn: '秋', winter: '冬' };
     const timeNames = { day: '白天', dusk: '黄昏', night: '夜晚', deep: '深夜' };
 
-    // 随机初始状态
     const seasonPool = ['spring', 'summer', 'autumn', 'winter'];
     const st = {
       season: seasonPool[Math.floor(Math.random() * 4)],
       temp: 22 + Math.round(Math.random() * 14) / 2,
-      moon: Math.floor(Math.random() * 10),
+      moon: Math.floor(Math.random() * 13),
       time: ['day', 'dusk', 'night', 'deep'][Math.floor(Math.random() * 4)]
     };
-    let spawned = false;
-    let spawnTimer = null;
+    let spawnLock = false;
+    let attemptCount = 0;
+    let archiveSeen = false;
 
-    // 保证初始状态不会直接满足全部条件
-    if (st.season === 'summer' && st.temp >= 26 && st.temp <= 28 &&
-        st.moon >= 1 && st.moon <= 9 && st.time === 'night') {
-      st.moon = 0;
-    }
     if (new URLSearchParams(location.search).get('spawn')) {
       st.season = 'summer'; st.temp = 27; st.moon = 3; st.time = 'night';
     }
 
-    function okSeason() { return st.season === 'summer'; }
-    function okTemp() { return st.temp >= 26 && st.temp <= 28; }
-    function okMoon() { return st.moon >= 1 && st.moon <= 9; }
-    function okTime() { return st.time === 'night'; }
-    function allOk() { return okSeason() && okTemp() && okMoon() && okTime(); }
+    /* ---- 判定（内部用，界面上不出现） ---- */
+    const okSeason = () => st.season === 'summer';
+    const okTemp = () => st.temp >= 26 && st.temp <= 29;
+    const okMoon = () => st.moon >= 2 && st.moon <= 6;
+    const okTime = () => st.time === 'night';
+    const ripe = () => okSeason() && okTemp() && okMoon();
+
+    /* ---- 可观测数据 ---- */
+    const SEASON_DATA = {
+      spring: { sun: '12 小时 10 分', trend: '+0.4°C / 30 天' },
+      summer: { sun: '13 小时 20 分', trend: '+2.3°C / 30 天' },
+      autumn: { sun: '11 小时 55 分', trend: '−0.9°C / 30 天' },
+      winter: { sun: '10 小时 30 分', trend: '−2.1°C / 30 天' }
+    };
+    const TIDE = [3.1, 2.6, 2.0, 1.5, 1.2, 1.1, 1.3, 1.7, 2.2, 2.7, 3.0, 3.2, 3.3];
+    const timeRead = {
+      day: '正午，光柱打穿水面，能见度 25 m',
+      dusk: '太阳刚落下，光在几分钟里暗下来',
+      night: '日落后约 1.5 小时，只剩月光',
+      deep: '日落后 3 小时以上，月亮偏西'
+    };
 
     function moonLabel() {
-      if (st.moon === 0) return '满月当天';
-      return '满月后第 ' + st.moon + ' 天';
+      return st.moon === 0 ? '满月当天' : '满月后第 ' + st.moon + ' 晚';
     }
 
     function paint() {
-      // 按钮
       $$('#seasonSeg button', root).forEach(b => b.classList.toggle('on', b.dataset.v === st.season));
       $$('#timeSeg button', root).forEach(b => b.classList.toggle('on', b.dataset.v === st.time));
       $('#seasonVal', root).textContent = names[st.season];
@@ -301,6 +325,12 @@ const LAB = {
       $('#tempRange', root).value = st.temp;
       $('#moonRange', root).value = st.moon;
 
+      $('#seasonRead', root).textContent =
+        `日照 ${SEASON_DATA[st.season].sun} · 水温 ${SEASON_DATA[st.season].trend}`;
+      $('#tempRead', root).textContent = `水温计：${st.temp.toFixed(1)}°C（已持续 30 天）`;
+      $('#moonRead', root).textContent = `潮差：${TIDE[st.moon].toFixed(1)} m`;
+      $('#timeRead', root).textContent = timeRead[st.time];
+
       scene.className = 'scene t-' + st.time;
       if (st.season === 'winter') scene.classList.add('season-winter');
       if (st.temp >= 30) scene.classList.add('hot', 'bleached');
@@ -310,45 +340,78 @@ const LAB = {
         (st.season === 'summer' ? '☀️ ' : st.season === 'winter' ? '❄️ ' : '🌤 ') +
         names[st.season] + ' · ' + timeNames[st.time] + ' · ' + st.temp.toFixed(1).replace('.0', '') + '°C';
 
-      const lamps = {
-        season: okSeason(), temp: okTemp(), moon: okMoon(), time: okTime()
-      };
-      $$('.lamp', root).forEach(l => l.classList.toggle('ok', lamps[l.dataset.k]));
-      $('#btnSpawn', root).disabled = !allOk();
-
-      if (!okSeason()) {
-        note.innerHTML = '现在不是繁殖季。把季节调到<b>夏天</b>，日照变长，精卵束才会成熟。';
-      } else if (!okTemp()) {
-        note.innerHTML = st.temp < 26
-          ? '水温还差一点。珊瑚需要水温回升到 <b>26–28°C</b>。'
-          : '水温偏高了。超过 30°C，珊瑚会开始<b>白化</b>。';
-      } else if (!okMoon()) {
-        note.innerHTML = '月相不对。大产卵发生在满月之后的 <b>1–9 天</b>，不是满月当天。';
-      } else if (!okTime()) {
-        note.innerHTML = st.time === 'deep'
-          ? '太晚了。珊瑚的产卵窗口只有<b>日落后 1–2 小时</b>。'
-          : '时间不对。要等太阳落山之后。';
-      } else {
-        note.innerHTML = '四个条件全部满足——整片珊瑚礁要开始了。';
-      }
-
       if (st.temp >= 30) triggerBleach();
-      if (st.season === 'winter' && okTemp() && okMoon() && okTime()) triggerWinter();
-      if (okSeason() && okTemp() && okMoon() && st.time === 'deep') triggerLate();
+    }
 
-      if (allOk()) {
-        if (!spawned) {
-          spawned = true;
-          clearTimeout(spawnTimer);
-          spawnTimer = setTimeout(spawn, 550);
+    /* ---- 下潜观察：只说看到什么，不判对错 ---- */
+    function observeText() {
+      const parts = [];
+      if (st.season === 'winter') parts.push('珊瑚虫缩在骨骼杯里，触手几乎不伸出来。');
+      else if (st.season === 'spring') parts.push('珊瑚虫醒着，但动作很慢，组织还是薄薄一层。');
+
+      if (st.temp >= 30) parts.push('颜色明显发淡，像被漂白过，体壁薄得能看见骨骼的纹路。');
+      else if (st.temp >= 26) parts.push('口道下面的组织鼓起来了，隔着半透明的体壁能看到密密的小颗粒，一团一团挤在一起。');
+      else if (st.temp >= 24) parts.push('组织里只有零星几粒淡色的东西，聚不成团。');
+      else parts.push('体壁很薄，什么颗粒都看不到。');
+
+      if (st.moon === 0) parts.push('海面被满月照得发亮，水里的影子很清楚。');
+      else if (st.moon <= 6) parts.push('月亮已经缺了一角，夜里比前几天暗。');
+      else parts.push('月亮缺了大半，但海面还是亮。');
+
+      if (st.time === 'day') parts.push('阳光直射，珊瑚虫都缩着，鱼在头顶成群地转。');
+      if (st.time === 'dusk') parts.push('光正在退，几条鱼开始往礁缝里钻。');
+      if (st.time === 'night') parts.push('手电一关就全黑了，浮游小虫在光柱里乱撞。');
+      if (st.time === 'deep') parts.push('水下很冷，能见度变差，礁区安静得反常。');
+
+      return parts.join('');
+    }
+
+    function observe() {
+      note.textContent = observeText();
+      const rect = scene.getBoundingClientRect();
+      FX.burst(rect.left + rect.width * 0.5, rect.top + rect.height * 0.55, 10);
+      if (st.temp >= 30) discover('bleach', '白化警报', '水温超过 30°C，共生藻离开珊瑚，珊瑚失去颜色。', 100);
+    }
+
+    /* ---- 守候今晚 ---- */
+    function attempt() {
+      attemptCount++;
+      note.textContent = '你关掉手电，坐在礁石边等。';
+      setTimeout(() => {
+        if (ripe() && okTime() && st.time !== 'deep') {
+          spawn();
+          return;
         }
-      } else {
-        spawned = false;
-        clearTimeout(spawnTimer);
+        note.textContent = failText();
+        if (st.season === 'winter' && okTemp() && okMoon() && okTime()) {
+          triggerWinter();
+        } else if (okSeason() && okTemp() && okMoon() && st.time === 'deep') {
+          triggerLate();
+        } else if (attemptCount >= 3 && !archiveSeen) {
+          toast('📓 也许该翻翻别的礁区是怎么记录的', 3600);
+        }
+      }, 1200);
+    }
+
+    function failText() {
+      if (st.time === 'day') return '太阳还没落。你在礁边坐到下午，珊瑚虫全缩着，海面什么也没有。';
+      if (st.time === 'dusk') return '天刚擦黑，你守到完全暗下来。海面只有几条鱼翻起的水花。';
+      if (st.time === 'deep') return '你来的时候已经很晚。守到天亮，海面一直很安静。';
+      if (st.moon === 0) return '月亮很圆，海面反着光。守了一夜，没有任何动静。';
+      if (st.moon > 6) return '月亮缺得多了。守到后半夜，礁区安静得像没人住。';
+      if (!okSeason()) {
+        return st.season === 'winter'
+          ? '水很冷。珊瑚虫整夜缩着，口道没有张开过。'
+          : '守到天亮，海面很安静。珊瑚组织还薄，看不出要产卵的样子。';
       }
+      if (st.temp < 26) return '守了一夜，什么也没发生。水温计上的数字一整晚都没怎么动。';
+      if (st.temp > 29) return '水有点烫手。珊瑚的颜色比上个月淡，整夜没有动作。';
+      return '守到天亮，海面很安静。';
     }
 
     function spawn() {
+      if (spawnLock) return;
+      spawnLock = true;
       const first = !State.modules.lab;
       const n = 34;
       for (let i = 0; i < n; i++) {
@@ -365,29 +428,33 @@ const LAB = {
       }
       slick.classList.add('on');
       setTimeout(() => slick.classList.remove('on'), 6000);
-      if (scene) FX.burst(scene.getBoundingClientRect().left + scene.offsetWidth / 2,
-        scene.getBoundingClientRect().top + scene.offsetHeight / 2, 40);
+      const r = scene.getBoundingClientRect();
+      FX.burst(r.left + r.width / 2, r.top + r.height / 2, 40);
+      note.textContent = '整片礁区在同一分钟里松开。精卵束向上升，像一场倒着下的雪。';
 
       if (first) {
         addMoney(2000);
         markDone('lab');
         setTimeout(() => {
           openModal(`
-            <p class="kicker">彩蛋 · 大产卵现场</p>
+            <p class="kicker">你守到了</p>
             <h2>整片礁区，同一夜</h2>
             <p>成千上万个珊瑚虫在同一时刻释放精卵束。它们向上升，像一场倒着下的雪。</p>
             <p>到海面后束膜破裂，精卵混合，形成一条粉褐色的<b>卵带</b>，可以长达几公里——卫星都拍得到。</p>
+            <p class="small muted" style="margin-top:12px">你刚才选的那四个数，不是标准答案。换个海区、换个物种，数字都会变一点。</p>
             <p><a href="https://www.bilibili.com/video/BV1f54y1L7wT/" target="_blank" rel="noopener">▶ 看真实的大产卵视频（B 站）</a></p>
             <div class="modal-actions">
               <button class="btn primary" data-close>继续实验</button>
+              <button class="btn" data-home>去看看其他板块</button>
             </div>
           `);
         }, 2400);
         discover('lab-spawn', '大产卵现场', '整片珊瑚礁在同一晚释放精卵束，海面形成卵带。', 100);
+      } else {
+        discover('lab-spawn-again', '又一次守到', '条件对了，礁区就会再来一次——只是规模会随年份不同。', 50);
       }
 
-      if (st.season === 'summer' && st.temp === 27 && st.moon === 3 && st.time === 'night') {
-        const rect = scene.getBoundingClientRect();
+      if (st.temp === 27 && st.moon === 3 && st.time === 'night' && st.season === 'summer') {
         for (let i = 0; i < 14; i++) {
           const s = document.createElement('div');
           s.className = 'star';
@@ -398,30 +465,53 @@ const LAB = {
           scene.appendChild(s);
           setTimeout(() => s.remove(), 4200);
         }
-        if (discover('perfect', '黄金时刻', '夏天 27°C、满月后第 3 天、日落后 1 小时——最理想的组合。', 100)) {
-          toast('✨ 完美条件！这是产卵成功率最高的组合', 3200);
-        }
+        discover('perfect', '黄金时刻', '夏天 27°C、满月后第 3 晚、日落后一个多小时——教科书式的组合。', 100);
       }
+
+      setTimeout(() => { spawnLock = false; }, 4000);
     }
 
     function triggerBleach() {
-      if (!discover('bleach', '白化警报', '水温超过 30°C，共生藻离开珊瑚，珊瑚失去颜色。', 100)) return;
-      emit(scene, ['✦', '·', '✧'], 22, 'snow');
-      toast('😰 太热了！共生藻纷纷逃走，珊瑚开始白化', 3200);
+      discover('bleach', '白化警报', '水温超过 30°C，共生藻离开珊瑚，珊瑚失去颜色。', 100);
     }
-
     function triggerWinter() {
-      if (!discover('winter', '冬天的珊瑚', '水温不够，精卵束还没成熟，珊瑚只能继续等。', 100)) return;
-      emit(scene, ['❄', '❅'], 16, 'snow');
-      toast('🥶 太冷了，珊瑚宝宝还没准备好', 3000);
+      discover('winter', '冬天的珊瑚', '水温不够，精卵束还没成熟，珊瑚只能继续等。', 100);
     }
-
     function triggerLate() {
-      if (!discover('late', '关上的窗', '产卵窗口只有日落后 1–2 小时，错过就要等下一次。', 100)) return;
-      toast('😴 太晚了，产卵窗口已经关闭', 3000);
+      discover('late', '关上的窗', '产卵窗口只有日落后那一小段，错过就要等下一次。', 100);
     }
 
-    // 事件
+    /* ---- 礁区档案 ---- */
+    function openArchive() {
+      const rows = REEF_LOG.map(r => `
+        <tr>
+          <td>${r.place}</td>
+          <td>${r.date}</td>
+          <td>${r.moon}</td>
+          <td>${r.temp.toFixed(1)}°C</td>
+          <td>${r.tide.toFixed(1)} m</td>
+          <td>${r.time}</td>
+          <td class="${r.result === '无' || r.result.startsWith('无') ? 'neg' : 'pos'}">${r.result}</td>
+        </tr>`).join('');
+      openModal(`
+        <p class="kicker">观测记录</p>
+        <h2>别人守过的夜</h2>
+        <p style="margin-bottom:14px">这些是各地观测员留下的记录，不是规则。规律要你自己找。</p>
+        <div class="log-wrap">
+          <table class="log-table">
+            <thead><tr><th>礁区</th><th>日期</th><th>满月后</th><th>水温</th><th>潮差</th><th>开始时间</th><th>结果</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="modal-actions"><button class="btn primary" data-close>回去试一晚</button></div>
+      `, { wide: true });
+      if (!archiveSeen) {
+        archiveSeen = true;
+        discover('archive', '观测员的手记', '九条来自不同礁区的记录，比任何一条规则都好用。', 100);
+      }
+    }
+
+    /* ---- 事件 ---- */
     $$('#seasonSeg button', root).forEach(b => b.addEventListener('click', () => {
       st.season = b.dataset.v; paint();
     }));
@@ -434,9 +524,10 @@ const LAB = {
     $('#moonRange', root).addEventListener('input', e => {
       st.moon = Number(e.target.value); paint();
     });
-    $('#btnSpawn', root).addEventListener('click', () => { if (allOk()) spawn(); });
+    $('#btnObserve', root).addEventListener('click', observe);
+    $('#btnSpawn', root).addEventListener('click', attempt);
+    $('#btnArchive', root).addEventListener('click', openArchive);
 
-    // 点珊瑚虫
     $$('.polyp', scene).forEach(p => {
       p.addEventListener('click', e => {
         e.stopPropagation();
@@ -444,22 +535,21 @@ const LAB = {
           '精卵束在珊瑚虫体内要准备约半年，卵巢和精囊长在不同的隔膜上。', 100);
         if (!got) return;
         openModal(`
-          <p class="kicker">彩蛋 · 透视模式</p>
+          <p class="kicker">透视模式</p>
           <h2>身体里的半年工程</h2>
           <p>精卵束不是一天做好的。珊瑚虫会在体内慢慢攒上大约半年：</p>
           <ul style="margin:14px 0 0 18px;font-size:13px;line-height:2;color:#8fb3c4">
             <li>卵巢和精囊长在<b style="color:#fff">不同的隔膜</b>上，所以要把精子和卵子打包在一起。</li>
             <li>卵子里囤卵黄和脂滴，脂滴提供浮力。</li>
-            <li>等到水温、月光对上，整束一起从口道推出去。</li>
+            <li>一整个冬天低温打底、春夏升温催熟，最后才轮到月光和天黑发令。</li>
           </ul>
           <div class="modal-actions"><button class="btn primary" data-close>原来如此</button></div>
         `);
       });
     });
 
-    // 首次进入引导
     if (!State.modules.lab) {
-      setTimeout(() => toast('先试试把季节调到夏天，再把水温调到 26–28°C', 4200), 900);
+      setTimeout(() => toast('没有提示。先「下潜观察」，再「守候今晚」试试', 4200), 900);
     }
 
     paint();

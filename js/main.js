@@ -23,8 +23,10 @@ function showFinal() {
   const start = $('#btnStart');
   if (start) start.addEventListener('click', () => {
     showScreen('home');
+    renderHud();
+    openModule('lab');
     if (!State.money) {
-      setTimeout(() => toast('先从中间的「四个条件实验室」开始吧', 3600), 500);
+      setTimeout(() => toast('先自己找出规律：调条件、下水看、守一夜', 4200), 600);
     }
   });
 
@@ -55,6 +57,11 @@ function showFinal() {
   }
   if (params.get('x')) {
     setTimeout(() => { const b = $('#btnCut'); if (b) b.click(); }, 120);
+  }
+  if (params.get('act') && currentModule === 'lab') {
+    const map = { observe: '#btnObserve', archive: '#btnArchive', spawn: '#btnSpawn' };
+    const sel = map[params.get('act')];
+    if (sel) setTimeout(() => { const b = $(sel); if (b) b.click(); }, 200);
   }
   if (params.get('st') && currentModule === 'journey') {
     const st = Number(params.get('st'));

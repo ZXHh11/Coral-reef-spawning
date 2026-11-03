@@ -99,3 +99,57 @@
 @media (max-width:760px){
   .j-caption .jv-title{font-size:14px}
 }
+
+/* ===== 彩蛋浮层卡（触发即弹屏） ===== */
+.egg-card-host{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:320;display:flex;flex-direction:column-reverse;align-items:center;gap:10px;width:340px;max-width:calc(100vw - 24px);pointer-events:none}
+.egg-card{pointer-events:auto;padding:14px 16px 12px;border-radius:14px;border:1px solid rgba(255,209,102,.45);
+  background:linear-gradient(160deg,rgba(21,44,60,.97),rgba(9,24,36,.98));
+  box-shadow:0 18px 44px rgba(0,0,0,.55);opacity:0;transform:translateY(14px) scale(.965);
+  transition:transform .38s cubic-bezier(.2,.8,.3,1),opacity .38s}
+.egg-card.in{opacity:1;transform:none}
+.egg-card.out{opacity:0;transform:translateY(10px) scale(.98)}
+.egg-card-head{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.egg-tag{color:#ffd166;letter-spacing:.1em}
+.egg-reward{color:#7ce0a8;font-weight:600}
+.egg-card h4{font-size:15px;margin:8px 0 5px;color:#fff}
+.egg-card p{font-size:12px;line-height:1.75;color:#a9c4d2}
+.egg-card-foot{display:flex;gap:8px;margin-top:11px}
+.egg-ok,.egg-dex{font-family:inherit;font-size:11.5px;padding:6px 12px;border-radius:999px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.16);background:transparent;color:#cfe3ee;transition:.2s}
+.egg-ok{background:rgba(255,143,163,.14);border-color:rgba(255,143,163,.45);color:#ffd3de}
+.egg-ok:hover,.egg-dex:hover{border-color:rgba(139,224,212,.6);color:#8be0d4}
+
+/* ===== 实验室：观测读数 ===== */
+.readout{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.6;letter-spacing:.01em}
+.lab-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.lab-actions .btn.ghost{grid-column:1 / -1}
+
+/* ===== 礁区档案表 ===== */
+.log-wrap{max-height:50vh;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.log-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.log-table th,.log-table td{padding:8px 9px;text-align:left;border-bottom:1px solid rgba(255,255,255,.06);white-space:nowrap}
+.log-table th{position:sticky;top:0;background:#0d2233;color:var(--cyan);font-weight:500;font-size:11px}
+.log-table td.pos{color:#7ce0a8}
+.log-table td.neg{color:#ff9aa2}
+
+@media (max-width:760px){
+  .egg-card-host{width:calc(100vw - 24px);bottom:14px}
+  .lab-actions{grid-template-columns:1fr}
+  .lab-actions .btn.ghost{grid-column:auto}
+  .log-table{font-size:10.5px}
+}
+
+/* ===== 移动端：修横向溢出 ===== */
+@media (max-width:760px){
+  html,body{overflow-x:hidden;max-width:100%}
+  .lab-grid{grid-template-columns:minmax(0,1fr)!important}
+  .lab-grid>*{min-width:0;max-width:100%}
+  .scene{aspect-ratio:4/3}
+  .seg button{flex:1 1 calc(50% - 6px);min-width:0;font-size:11.5px;padding:8px 4px}
+  .hud{gap:6px;padding:0 10px}
+  .hud .bank-goal{display:none}
+  .hud-chip{padding:6px 9px;font-size:11px}
+  .bank-label{display:none}
+  .ctrl{padding:12px}
+  .module-head h2{font-size:22px}
+}

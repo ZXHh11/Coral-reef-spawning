@@ -120,8 +120,46 @@ function discover(id, name, desc, reward = 100) {
   saveState();
   addMoney(reward);
   renderHud();
-  toast('🏅 新发现：' + name + ' <b style="color:#ffd166">+' + reward + '亿</b>', 3000);
+  showEggCard(name, desc, reward);
   return true;
+}
+
+/* 彩蛋卡：触发即弹到屏幕上，不藏进档案 */
+function showEggCard(name, desc, reward) {
+  let host = document.getElementById('eggCardHost');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'eggCardHost';
+    host.className = 'egg-card-host';
+    document.body.appendChild(host);
+  }
+  const card = document.createElement('div');
+  card.className = 'egg-card';
+  card.innerHTML = `
+    <div class="egg-card-head">
+      <span class="egg-tag">🏅 新发现</span>
+      <span class="egg-reward">+${fmt(reward)}亿</span>
+    </div>
+    <h4>${name}</h4>
+    <p>${desc}</p>
+    <div class="egg-card-foot">
+      <button class="egg-ok">收下</button>
+      <button class="egg-dex">放进档案</button>
+    </div>`;
+  host.appendChild(card);
+  requestAnimationFrame(() => card.classList.add('in'));
+  setTimeout(() => card.classList.add('in'), 40);
+
+  const close = () => {
+    card.classList.remove('in');
+    card.classList.add('out');
+    setTimeout(() => card.remove(), 380);
+  };
+  card.querySelector('.egg-ok').addEventListener('click', close);
+  card.querySelector('.egg-dex').addEventListener('click', () => { close(); openDex(); });
+  const timer = setTimeout(close, 9000);
+  card.addEventListener('mouseenter', () => clearTimeout(timer));
+  while (host.children.length > 3) host.firstChild.remove();
 }
 
 function openDex() {
